@@ -14,7 +14,7 @@ const addressSchema = new Schema<TAddress>({
 })
 
 const userSchema = new Schema<TUser>({
-    userId: {type: Number, required: true, trim: true},
+    userId: {type: Number, required: true},
     username: {type: String, required: true},
     password: {type: String, required: true},
     fullName: {
@@ -38,4 +38,4 @@ const userSchema = new Schema<TUser>({
 })
 
 //model create
-export const User = model<TUser>('User', userSchema)
+export const UserModel = model<TUser>('User', userSchema)
