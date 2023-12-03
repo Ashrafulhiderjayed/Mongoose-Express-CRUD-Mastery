@@ -2,7 +2,7 @@ import { z } from "zod";
 
 const FullNameValidationSchema = z.object({
     firstName: z.string(),
-    lastName: z.string(),
+    lastName: z.string().min(1),
 });
 
 const AddressValidationSchema = z.object({
