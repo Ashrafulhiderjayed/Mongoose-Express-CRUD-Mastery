@@ -1,21 +1,21 @@
 import { TUser } from "./user.interface";
-import { UserModel } from "./user.model";
+import { User } from "./user.model";
 
 
-const createUserIntoDB = async (userData: TUser) =>{
-   
-    const result = await UserModel.create(userData);
+const createUserIntoDB = async (userData: TUser) => {
+
+    const result = (await User.create(userData)).$set('password', undefined);
 
     return result;
 }
 
-const getAllUsersFromDB = async () =>{
-    const result = await UserModel.find();
+const getAllUsersFromDB = async () => {
+    const result = await User.find();
     return result;
 }
 
-const getSingleUserFromDB = async (id: number) =>{
-    const result = await UserModel.findOne({id});
+const getSingleUserFromDB = async (id: number) => {
+    const result = await User.findOne({ id });
     return result;
 }
 
