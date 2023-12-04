@@ -51,6 +51,7 @@ const userSchema = new Schema<TUser, UserModel>({
         required: [true, 'Address is required'],
     },
     orders: { type: [ordersSchema] },
+    isDeleted:{ type: Boolean, default: false },
 })
 
 //pre save middleware
@@ -64,15 +65,25 @@ userSchema.pre('save', async function (next) {
 
 //post save middleware/ hook
 userSchema.post('save', function(doc, next){
-    // doc.password = '' //don't need this. doc=full document
+    doc.password = '';
     console.log('post hook: we saved our data');
+    next();
+})
+
+//Query middleware
+userSchema.pre('find', function(next){
+    this.find({isDeleted: {$ne: true}})
     next();
   })
   
+  userSchema.pre('findOne', function(next){
+    this.find({isDeleted: {$ne: true}})
+    next();
+  })
 
 //creating custom staic method
-userSchema.statics.isUserExists = async function(id: number){
-    const existingUser = await User.findOne({id});
+userSchema.statics.isUserExists = async function(userId: number){
+    const existingUser = await User.findOne({userId});
     return existingUser;
 }
 

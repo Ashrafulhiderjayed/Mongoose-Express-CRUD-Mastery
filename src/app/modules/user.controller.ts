@@ -27,7 +27,7 @@ const createUser = async (req: Request, res: Response) => {
     }
 };
 
-const getAllUsersFromDB = async (req: Request, res: Response) =>{
+const getAllUsers = async (req: Request, res: Response) =>{
     try{
         const result = await UserServices.getAllUsersFromDB();
 
@@ -45,7 +45,8 @@ const getAllUsersFromDB = async (req: Request, res: Response) =>{
       }
 }
 
-const getSingleUserFromDB = async (req: Request, res: Response) =>{
+//get single user
+const getSingleUser = async (req: Request, res: Response) =>{
     try{
         const id = req.params.userId
         const result = await UserServices.getSingleUserFromDB(id)
@@ -64,8 +65,58 @@ const getSingleUserFromDB = async (req: Request, res: Response) =>{
       }
 }
 
+// update single user 
+const updateSingleUser = async (req: Request, res: Response) =>{
+    try{
+        const id = req.body;
+
+        //Data validation using zod
+        const zodParseData = UserValidationSchema.parse(id);
+
+        const userId = zodParseData.userId
+
+        const result = await UserServices.updateSingleUserFromDB(userId)
+
+        res.status(200).json({
+            success: true,
+            message: "User is retrive successfully",
+            data: result,
+        })
+    } catch (err: any) {
+        res.status(500).json({
+          success: false,
+          message: err.message || "Something went wrong",
+          error: err,
+        });
+      }
+}
+
+//delete single user
+const deleteSingleUser = async(req: Request, res: Response) =>{
+    try {
+        const id = req.params.userId
+        const result = await UserServices.deleteUserFromDB(id)
+        res.status(200).json({
+            success: true,
+            message: "User deleted successfully!",
+            data: null
+        })
+    } catch (error: any) {
+        res.status(500).json({
+          success: false,
+          message: 'User not found',
+          error: {
+            code: 404,
+            description: error.message || 'User not found!',
+          },
+        });
+      }
+  }
+
 export const UserControllers = {
     createUser,
-    getAllUsersFromDB,
-    getSingleUserFromDB,
+    getAllUsers,
+    getSingleUser,
+    updateSingleUser,
+    deleteSingleUser
 };
