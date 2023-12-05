@@ -51,7 +51,7 @@ const userSchema = new Schema<TUser, UserModel>({
         required: [true, 'Address is required'],
     },
     orders: { type: [ordersSchema] },
-    isDeleted:{ type: Boolean, default: false },
+    // isDeleted:{ type: Boolean, default: false },
 })
 
 //pre save middleware
@@ -86,6 +86,21 @@ userSchema.statics.isUserExists = async function(userId: number){
     const existingUser = await User.findOne({userId});
     return existingUser;
 }
+
+//pre save middleware/ hook: will work on create(), save()
+userSchema.pre('save', async function (next) {
+    // eslint-disable-next-line @typescript-eslint/no-this-alias
+    const user = this; 
+
+    //hashing password and save into DB
+    user.password = await bcrypt.hash(
+      user.password,
+      Number(config.bcrypt_salt_rounds),
+    );
+    //remove orders
+    user.$set('orders', undefined);
+    next();
+  });
 
 //model created
 export const User = model<TUser, UserModel>('User', userSchema)

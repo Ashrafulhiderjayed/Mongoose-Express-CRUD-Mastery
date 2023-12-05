@@ -54,10 +54,53 @@ const updateSingleUserFromDB = async (userId: number, userData: any) => {
     return result
   };
 
+  //put order
+const putOrderIntoDB = async (userId: number, orderData: any) => {
+  if (!(await User.isUserExists(userId))) {
+    throw new Error('User does not Exist');
+  }
+  const result = await User.findOneAndUpdate(
+    { userId },
+    { $push: { orders: orderData } },
+    { new: true }
+  );
+  return result;
+};
+
+//get all order for single user
+const getAllOrdersFromDB = async (userId: number) => {
+  if (!(await User.isUserExists(userId))) {
+    throw new Error('User does not Exist');
+  }
+  const result = await User.findOne({userId}).select({orders: 1, _id: 0});
+  return result;
+};
+
+//calculate total price of order for single user
+const calculateOrdersPriceFromDB = async (userId: number) => {
+  if (!(await User.isUserExists(userId))) {
+    throw new Error('User does not Exist');
+  }
+  const user = await User.findOne({ userId });
+    if (!user) {
+      return 0;
+    }
+    //calculate
+    let totalPrice = 0;
+    user.orders.forEach(order => {
+      totalPrice = parseFloat((totalPrice + order.price * order.quantity).toFixed(2));
+    });
+
+    return {totalPrice};
+};
+
 export const UserServices = {
     createUserIntoDB,
     getAllUsersFromDB,
     getSingleUserFromDB,
     deleteUserFromDB,
-    updateSingleUserFromDB
+    updateSingleUserFromDB,
+    putOrderIntoDB,
+    getAllOrdersFromDB,
+    calculateOrdersPriceFromDB
 }

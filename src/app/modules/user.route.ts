@@ -12,4 +12,13 @@ router.delete('/:userId', UserControllers.deleteSingleUser)
 
 router.post('/', UserControllers.createUser);
 
+router.put('/:userId', UserControllers.updateSingleUser)
+
+//Order Management:
+router.put('/:userId/orders', UserControllers.putOrder)
+
+router.get('/:userId/orders', UserControllers.getAllOrders)
+
+router.get('/:userId/orders/total-price', UserControllers.calculateAllOrdersPrice)
+
 export const UserRoutes = router;

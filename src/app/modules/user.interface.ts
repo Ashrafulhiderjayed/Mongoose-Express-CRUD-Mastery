@@ -28,7 +28,7 @@ export type TUser = {
     hobbies: [string, string];
     address: TAddress;
     orders: TOrders[];
-    isDeleted: boolean;
+    // isDeleted: boolean;
 }
 
 //Static method

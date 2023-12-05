@@ -29,7 +29,7 @@ const UserValidationSchema = z.object({
     hobbies: z.tuple([z.string(), z.string()]),
     address: AddressValidationSchema,
     orders: z.array(OrderValidationSchema).optional(),
-    idDeleted: z.boolean(),
+    // idDeleted: z.boolean(),
 });
 
 export default UserValidationSchema;
