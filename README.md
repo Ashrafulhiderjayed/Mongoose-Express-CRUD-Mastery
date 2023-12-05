@@ -56,8 +56,7 @@ Configure VS Code settings to use Prettier as the default formatter.
 
 Install ts-node-dev: npm install ts-node-dev --save-dev.
 Update scripts in package.json to include start:dev using ts-node-dev.
- ```
-  / package.json
+ ```package.json
 {
   // ...
   "scripts": {
@@ -69,4 +68,5 @@ Update scripts in package.json to include start:dev using ts-node-dev.
  ```
 
 8. **Step 8:** Run the Server:
+
 Execute npm run start:dev to run the server in development mode.
