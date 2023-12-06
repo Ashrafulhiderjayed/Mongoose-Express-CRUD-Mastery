@@ -23,13 +23,17 @@ const getAllUsersFromDB = async () => {
     return result;
 };
 
+//get single user
 const getSingleUserFromDB = async (userId: number) => {
-    const result = await User.findOne({ userId });
-    return result;
+  if (!(await User.isUserExists(userId))) {
+    throw new Error('User does not Exist');
+  }
+  const result = await User.findOne({ userId }).select({password: 0, orders: 0});
+  return result;
 }
 
 //delete
-const deleteUserFromDB = async (userId: string) => {
+const deleteUserFromDB = async (userId: number) => {
     if (!(await User.isUserExists(userId))) {
       throw new Error('User does not Exist');
     }
@@ -51,7 +55,7 @@ const updateSingleUserFromDB = async (userId: number, userData: any) => {
     );
     }
     const result = await User.findOneAndUpdate({userId}, userData).select({_id: 0, password: 0, orders: 0 })
-    return result
+    return result;
   };
 
   //put order
