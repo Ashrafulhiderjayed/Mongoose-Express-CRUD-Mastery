@@ -1,13 +1,13 @@
 import { Request, Response } from "express";
 import { UserServices } from "./user.service";
-import UserValidationSchema from "./user.validation";
+import { UpdateUserValidationSchema, UserValidationSchema } from "./user.validation";
 
 const createUser = async (req: Request, res: Response) => {
     try {
-        const user = req.body;
+        const userData = req.body;
 
         //Data validation using zod
-        const zodParseData = UserValidationSchema.parse(user)
+        const zodParseData = UserValidationSchema.parse(userData)
 
         // will call service function to send this data
         const result = await UserServices.createUserIntoDB(zodParseData);
@@ -33,7 +33,7 @@ const getAllUsers = async (req: Request, res: Response) =>{
 
         res.status(200).json({
             success: true,
-            message: "Users retrive successfully",
+            message: "Users fetched successfully",
             data: result,
         })
     } catch (err: any) {
@@ -48,12 +48,12 @@ const getAllUsers = async (req: Request, res: Response) =>{
 //get single user
 const getSingleUser = async (req: Request, res: Response) =>{
     try{
-        const id = req.params.userId
+        const id = parseInt(req.params.userId, 10);
         const result = await UserServices.getSingleUserFromDB(id)
 
         res.status(200).json({
             success: true,
-            message: "User is retrive successfully",
+            message: "User is fetched successfully",
             data: result,
         })
     } catch (err: any) {
@@ -70,7 +70,7 @@ const getSingleUser = async (req: Request, res: Response) =>{
 //delete single user
 const deleteSingleUser = async(req: Request, res: Response) =>{
     try {
-        const id = req.params.userId
+        const id = parseInt(req.params.userId, 10);
         const result = await UserServices.deleteUserFromDB(id)
         res.status(200).json({
             success: true,
@@ -92,20 +92,24 @@ const deleteSingleUser = async(req: Request, res: Response) =>{
   //update single user
 const updateSingleUser = async(req: Request, res: Response) =>{
     try {
-        const id = req.body;
+        const userData = req.body;
 
         //zod validation
-        const zodParseData = UserValidationSchema.parse(userData)
+        const zodParseData = UpdateUserValidationSchema.parse(userData)
 
         const userId = zodParseData.userId
+        
 
-        const result = await UserServices.deleteUserFromDB(userId, zodParseData);
+        //replaced with this line
+        const result = await UserServices.updateSingleUserFromDB(userId, zodParseData);
+        // const result = await UserServices.deleteUserFromDB(userId);
         res.status(200).json({
             success: true,
             message: "User updated successfully!",
             data: result,
         })
     } catch (error: any) {
+      // console.log(error)
         res.status(500).json({
           success: false,
           message: 'User not found',
@@ -115,22 +119,28 @@ const updateSingleUser = async(req: Request, res: Response) =>{
           },
         });
       }
-  }
+  };
 
 
   // put/create order 
 const putOrder = async (req: Request, res: Response) => {
     try {
       const orderData = req.body;
+      // console.log('orderData', orderData)
+
       const userId = req.params.userId
+      // const userId = parseInt(req.params.userId, 10);
   
       const result = await UserServices.putOrderIntoDB(userId, orderData);
+      // console.log('result', result)
       res.status(200).json({
         success: true,
         message: 'Order created successfully!',
-        data: result,
+        //TODO rm
+        data: null,
+        // data: result,
       });
-    } catch (error) {
+    } catch (error: any) {
       res.status(404).json({
         success: false,
         message: 'Order not found',
@@ -145,7 +155,7 @@ const putOrder = async (req: Request, res: Response) => {
 //get all orders for single user
 const getAllOrders = async(req : Request, res : Response) =>{
     try{
-        const id = req.params.userId
+      const id = parseInt(req.params.userId, 10);
         const result = await UserServices.getAllOrdersFromDB(id)
         res.status(200).json({
             success: true,
@@ -167,7 +177,7 @@ const getAllOrders = async(req : Request, res : Response) =>{
   //get all orders and calculated total price
   const calculateAllOrdersPrice = async(req : Request, res : Response) =>{
     try{
-      const id = req.params.userId
+      const id = parseInt(req.params.userId, 10);
         const result = await UserServices.calculateOrdersPriceFromDB(id)
         res.status(200).json({
             success: true,

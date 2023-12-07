@@ -7,14 +7,14 @@ export type TFullName = {
 
 export type TAddress = {
     street: string;
-    city: string;
-    country: string;
+    city?: string;
+    country?: string;
 }
 
 export type TOrders = {
-    productName: string,
-    price: number,
-    quantity: number
+    productName?: string,
+    price?: number,
+    quantity?: number
 }
 
 export type TUser = {
@@ -25,9 +25,9 @@ export type TUser = {
     age: number;
     email: string;
     isActive: boolean;
-    hobbies: [string, string];
+    hobbies: string[];
     address: TAddress;
-    orders: TOrders[];
+    orders?: TOrders[];
     // isDeleted: boolean;
 }
 
